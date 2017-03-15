@@ -11,9 +11,9 @@ class PagedArray {
     int * getPage();
 
 public:
-    int * getValue(int index);
+    int getValue(int index);
 
-    int operator[](int index);
+    int& operator[](int index);
 
     bool isPageLoaded(int page);
 
@@ -26,6 +26,8 @@ public:
     PagedArray(FILE *File);
 
     int *loadPage(int where, int which);
+
+    void cleanup();
 };
 
 

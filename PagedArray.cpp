@@ -57,18 +57,13 @@ int* PagedArray::getPage(int page) {
 }
 
 
-int* PagedArray::getValue(int index) {
+int& PagedArray::operator[](int index) {
     int pageToGet = (int) floor(index / PAGESIZE);
     int position = index % PAGESIZE;
 
     int* page = getPage(pageToGet);
 
-    return &page[position];
-}
-
-
-int PagedArray::operator[](int index) {
-    return getValue(index);
+    return page[position];
 }
 
 bool PagedArray::isPageLoaded(int page) {
@@ -127,4 +122,12 @@ int PagedArray::freePage() {
 
     return toReplace;
 
+}
+
+void PagedArray::cleanup() {
+    int i;
+    for (i=0; i < NUMPAGES; i++) {
+        if (loadedPages[i] != -1)
+            FileHandler::writeNumbers(file, pageContainer[i], loadedPages[i]);
+    }
 }

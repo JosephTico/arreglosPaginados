@@ -21,7 +21,11 @@ int main() {
 
     std::cout << par[2] << std::endl;
 
+    par[3] = 99;
+
     std::cout << par[3] << std::endl;
+
+
 
 
 

@@ -27,6 +27,10 @@ public:
     static void writeNumtoBin(FILE *file, int num);
 
     static int *readNumbers(FILE *pFile, int start, int length);
+
+    static void writeNumbers(FILE *file, int *arr, int page);
+
+    void createFinalFile(FILE *binFile);
 };
 
 
