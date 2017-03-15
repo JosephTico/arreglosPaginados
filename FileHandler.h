@@ -30,7 +30,7 @@ public:
 
     static void writeNumbers(FILE *file, int *arr, int page);
 
-    void createFinalFile(FILE *binFile);
+    static void createFinalFile(FILE *binFile);
 };
 
 

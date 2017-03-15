@@ -21,9 +21,12 @@ int main() {
 
     std::cout << par[2] << std::endl;
 
-    par[3] = 99;
+    par[0] = 649;
 
-    std::cout << par[3] << std::endl;
+    std::cout << par[2] << std::endl;
+
+
+    par.cleanup();
 
 
 

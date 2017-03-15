@@ -115,6 +115,7 @@ int PagedArray::freePage() {
         }
     }
 
+    FileHandler::writeNumbers(file, pageContainer[toReplace], loadedPages[toReplace]);
     delete(pageContainer[toReplace]);
     loadedPages[toReplace] = -1;
 
@@ -130,4 +131,6 @@ void PagedArray::cleanup() {
         if (loadedPages[i] != -1)
             FileHandler::writeNumbers(file, pageContainer[i], loadedPages[i]);
     }
+
+    FileHandler::createFinalFile(file);
 }

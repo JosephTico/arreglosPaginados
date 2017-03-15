@@ -19,7 +19,7 @@ bool is_file_exist(const char *fileName)
 
 
 std::FILE* FileHandler::createTempFile() {
-    std::FILE* tmpf = std::tmpfile();
+   std::FILE* tmpf = std::tmpfile();
     return tmpf;
 }
 
@@ -86,26 +86,55 @@ void FileHandler::writeNumtoBin(std::FILE* file, int num) {
 
     std::fseek(file, 0, SEEK_END);
 
-    fwrite(&num, sizeof(int), 1, file);
+    std::fwrite(&num, sizeof(int), 1, file);
 }
 
 
 void FileHandler::writeNumbers(std::FILE* file, int* arr, int page) {
 
-    int arrSize = sizeof(arr) / sizeof(int);
+    int arrSize = sizeof(arr) / sizeof(int) + 1;
 
 
     std::fseek(file, sizeof(int) * page * arrSize, SEEK_SET);
 
 
     for (int i = 0; i < arrSize; ++i) {
-        fwrite(&arr[i], sizeof(int), 1, file);
+        if (arr[i] == -1)
+            continue;
+
+        cout << arr[i] << endl;
+        std::fwrite(&arr[i], sizeof(int), 1, file);
     }
+
+
+    cout << FileHandler::readNumbers(file, 0, 256)[4] << endl;
 
 }
 
 void FileHandler::createFinalFile(std::FILE* binFile) {
     std::FILE* pFile = std::fopen("resultado.txt", "wb");
+    std::fclose(pFile);
+
+    std::ofstream out("resultado.txt");
+
+
+    std::fseek(binFile, 0L, SEEK_END);
+    long size = ftell(binFile);
+
+    std::fseek(binFile, 0, SEEK_SET);
+
+    int length = size / sizeof(int);
+
+    for (int i = 0; i < length; i++){
+        int result;
+
+        std::fread(&result, sizeof(int), 1, binFile);
+        out << result;
+
+        if (i+1 < length)
+            out << ",";
+    }
+
 
 
 
