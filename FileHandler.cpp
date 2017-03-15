@@ -5,6 +5,7 @@
 #include "FileHandler.h"
 #include <iostream>
 #include <fstream>
+
 using namespace std;
 
 
@@ -37,24 +38,31 @@ std::FILE* FileHandler::openByFilename(string filename, string mode) {
 }
 
 
-void FileHandler::txtToBinary(std::FILE* file) {
+std::FILE* FileHandler::txtToBinary(std::FILE* file) {
 
     int charCode;
     std::fseek(file, 0, SEEK_SET);
 
     string tmpNum;
 
-    std::FILE *binFile = FileHandler::openByFilename("file.bin", "wb");
+    std::FILE *binFile = FileHandler::createTempFile();
 
     while ((charCode = std::fgetc(file)) != EOF) {
 
         char charData = (char) charCode;
 
         if (charCode == 44 || charCode == 32) { // Check if it's a comma (ascii code 44) or space (code 32)
-            std::cout << tmpNum << std::endl;
 
-            std::cout << std::stoi(tmpNum) << std::endl;
-            FileHandler::writeNumtoBin(binFile, std::stoi(tmpNum));
+            try {
+
+                FileHandler::writeNumtoBin(binFile, std::stoi(tmpNum));
+
+            } catch(std::invalid_argument&) {
+                std::cout << "The input file contains invalid data" << std::endl;
+                exit(102);
+            }
+
+
             tmpNum = "";
             continue;
         }
@@ -64,10 +72,11 @@ void FileHandler::txtToBinary(std::FILE* file) {
     }
 
     if (tmpNum != "") {
-        std::cout << std::stoi(tmpNum) << std::endl;
         FileHandler::writeNumtoBin(binFile, std::stoi(tmpNum));
     }
 
+
+    return binFile;
 
 }
 
@@ -103,9 +112,7 @@ void FileHandler::writeNumbers(string filename) {
 }
 
 
-int *FileHandler::readNumbers(string filename, int start, int length) {
-
-    std::FILE *pFile = FileHandler::openByFilename(filename, "rb");
+int *FileHandler::readNumbers(std::FILE *pFile, int start, int length) {
 
     // Must be in heap because of the non-constant array size.
     static int* result;
@@ -120,8 +127,6 @@ int *FileHandler::readNumbers(string filename, int start, int length) {
         std::fread(&result[i], sizeof(int), 1, pFile);
     }
 
-
-    std::fclose(pFile);
 
     return result;
 }

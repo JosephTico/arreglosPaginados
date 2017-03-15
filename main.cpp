@@ -11,7 +11,11 @@ int main() {
 
     std::FILE* file = FileHandler::openByFilename("numeros.txt", "rb");
 
-    FileHandler::txtToBinary(file);
+    std::FILE* binFile =  FileHandler::txtToBinary(file);
+
+    int *result = FileHandler::readNumbers(binFile, 0, 2559);
+
+    std::cout << result[2560] << std::endl;
 
 
     //FileHandler::writeNumbers("file.bin");

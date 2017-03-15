@@ -18,13 +18,15 @@ public:
     static int *
     readNumbers(std::string filename, int start, int finish);
 
-    FILE *createTempFile();
+    static FILE *createTempFile();
 
     static FILE *openByFilename(std::string filename, std::string mode);
 
-    static void txtToBinary(FILE *file);
+    static FILE * txtToBinary(FILE *file);
 
     static void writeNumtoBin(FILE *file, int num);
+
+    static int *readNumbers(FILE *pFile, int start, int length);
 };
 
 
