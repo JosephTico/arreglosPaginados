@@ -8,16 +8,24 @@
 
 class PagedArray {
 
-    void getPage();
+    int * getPage();
 
 public:
-    int getValue(int index);
+    int * getValue(int index);
 
     int operator[](int index);
 
     bool isPageLoaded(int page);
 
-    static void loadPage(int page);
+    static int * loadPage(int page);
+
+    int *getPage(int page);
+
+    int freePage();
+
+    PagedArray(FILE *File);
+
+    int *loadPage(int where, int which);
 };
 
 

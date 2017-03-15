@@ -117,6 +117,8 @@ int *FileHandler::readNumbers(std::FILE *pFile, int start, int length) {
     // Must be in heap because of the non-constant array size.
     static int* result;
     result = (int*) malloc(length * sizeof(int));
+    std::fill_n(result, length, -1);
+
 
 
     std::fseek(pFile, sizeof(int) * start, SEEK_SET);

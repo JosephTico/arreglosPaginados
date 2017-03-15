@@ -13,9 +13,19 @@ int main() {
 
     std::FILE* binFile =  FileHandler::txtToBinary(file);
 
-    int *result = FileHandler::readNumbers(binFile, 0, 2559);
+    PagedArray par = PagedArray(binFile);
 
-    std::cout << result[2560] << std::endl;
+    std::cout << par[0] << std::endl;
+
+    std::cout << par[1] << std::endl;
+
+    std::cout << par[2] << std::endl;
+
+    std::cout << par[3] << std::endl;
+
+
+
+    //std::cout << result[2560] << std::endl;
 
 
     //FileHandler::writeNumbers("file.bin");

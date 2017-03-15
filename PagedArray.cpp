@@ -3,35 +3,67 @@
 //
 
 #include <cmath>
+#include <queue>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
 #include "PagedArray.h"
+#include "FileHandler.h"
 
 
 const int PAGESIZE = 256;
+const int NUMPAGES = 6;
 
-int p1[PAGESIZE] = {-1};
-int p2[PAGESIZE] = {-1};
-int p3[PAGESIZE] = {-1};
-int p4[PAGESIZE] = {-1};
-int p5[PAGESIZE] = {-1};
-int p6[PAGESIZE] = {-1};
+int* pageContainer[NUMPAGES];
 
-int pages[6][PAGESIZE] = {-1};
+int lastAccessed = -1;
 
-void PagedArray::getPage() {
+int loadedPages[NUMPAGES] = {-1, -1, -1, -1, -1, -1};
+
+int accessNumbers[NUMPAGES] = {0, 0, 0, 0, 0, 0};
+
+std::FILE *file;
+
+
+PagedArray::PagedArray(std::FILE *binFile) {
+    file = binFile;
+
+    int i;
+    for (i=0; i < NUMPAGES; i++) {
+        pageContainer[i] = (int*) malloc(PAGESIZE * sizeof(int));
+        std::fill_n(pageContainer[i], PAGESIZE, -1);
+    }
 
 }
 
+int* PagedArray::getPage(int page) {
 
-int PagedArray::getValue(int index) {
-    int page = (int) floor(index / PAGESIZE);
-    int position = index % PAGESIZE;
+    int i;
+    for (i=0; i < NUMPAGES; i++) {
+        if (loadedPages[i] == page) {
+            printf ("Page %d is already on slot %d\n", page, i);
+            printf("LoadedPages: %d %d %d %d %d %d\n", loadedPages[0], loadedPages[1], loadedPages[2], loadedPages[3], loadedPages[4], loadedPages[5]);
+            printf("AccessedPages: %d %d %d %d %d %d\n", accessNumbers[0], accessNumbers[1], accessNumbers[2], accessNumbers[3], accessNumbers[4], accessNumbers[5]);
 
-    if (!isPageLoaded(page)) {
-        loadPage(page);
+            lastAccessed = page;
+            accessNumbers[i] += 1;
+            return pageContainer[i];
+        }
     }
 
-    return page;
+    int whereToLoad = freePage();
+    accessNumbers[whereToLoad] = 0;
+    return loadPage(whereToLoad, page);
+}
 
+
+int* PagedArray::getValue(int index) {
+    int pageToGet = (int) floor(index / PAGESIZE);
+    int position = index % PAGESIZE;
+
+    int* page = getPage(pageToGet);
+
+    return &page[position];
 }
 
 
@@ -40,19 +72,59 @@ int PagedArray::operator[](int index) {
 }
 
 bool PagedArray::isPageLoaded(int page) {
-    if (p1[0] == page) {
-        return true;
-    } else if (p2[0] == page) {
-        return true;
-    } else if (p3[0] == page) {
-        return true;
-    } else if (p4[0] == page) {
-        return true;
-    } else if (p5[0] == page) {
-        return true;
-    } else return p6[0] == page;
+
+    int i;
+    for (i=0; i < NUMPAGES; i++) {
+        if (loadedPages[i] == page)
+            return true;
+    }
+
+    return false;
 }
 
-void PagedArray::loadPage(int page) {
+int* PagedArray::loadPage(int where, int which) {
+    int *loadedPage = FileHandler::readNumbers(file, which*PAGESIZE, PAGESIZE);
+    pageContainer[where] = loadedPage;
+    loadedPages[where] = which;
+
+    printf ("Loaded page %d on slot %d\n", which, where);
+
+    return loadedPage;
+
+}
+
+int PagedArray::freePage() {
+
+    int toReplace = 0;
+    int maxValue = -1;
+
+    printf("Last accessed is: %i\n", lastAccessed);
+    printf("LoadedPages: %d %d %d %d %d %d\n", loadedPages[0], loadedPages[1], loadedPages[2], loadedPages[3], loadedPages[4], loadedPages[5]);
+    printf("AccessedPages: %d %d %d %d %d %d\n", accessNumbers[0], accessNumbers[1], accessNumbers[2], accessNumbers[3], accessNumbers[4], accessNumbers[5]);
+
+
+    int i;
+    for (i=0; i < NUMPAGES; i++) {
+
+        if (loadedPages[i] == -1)
+        {
+            toReplace = i;
+            break;
+        }
+        if (loadedPages[i] == lastAccessed)
+            continue;
+
+        if (accessNumbers[i] >= maxValue) {
+            toReplace = i;
+            maxValue = accessNumbers[i];
+        }
+    }
+
+    delete(pageContainer[toReplace]);
+    loadedPages[toReplace] = -1;
+
+    printf ("Will free slot: %d\n", toReplace);
+
+    return toReplace;
 
 }
