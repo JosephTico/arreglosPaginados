@@ -1,54 +1,45 @@
 #include <iostream>
-#include "QuickSort.h"
-#include "PagedArray.h"
+#include <vector>
+#include "Sorting.h"
+#include "cmdline.h"
 #include "FileHandler.h"
 
-int main() {
+int main(int argc, char* argv[]) {
 
-    //std::cout << std::to_string(PagedArray::getValue(9000)) << std::endl;
+    cmdline::parser a;
 
-   // QuickSort::sort();
+    a.add<std::string>("input", 'i', "input file", true, "");
+
+    a.add<std::string>("algorithm", 'o', "sort algorithm to use", true, "");
+
+    a.add<std::string>("output", 'o', "output file", true, "resultado.txt");
+
+    a.parse_check(argc, argv);
+
+    std::cout << a.get<std::string>("input") << ", "
+         << a.get<std::string>("algorithm") << ", "
+         << a.get<std::string>("output") << std::endl;
+
+
+    exit(0);
+
 
     std::FILE* file = FileHandler::openByFilename("numeros.txt", "rb");
 
     std::FILE* binFile =  FileHandler::txtToBinary(file);
 
+    long length = FileHandler::getSize(binFile) / sizeof(int);
+
     PagedArray par = PagedArray(binFile);
 
-    std::cout << par[0] << std::endl;
+    Sorting::quickSort(&par, 0, (int) (length - 1));
 
-    std::cout << par[1] << std::endl;
+    Sorting::selectionSort(&par, (int) (length));
 
-    std::cout << par[2] << std::endl;
-
-    par[0] = 649;
-
-    std::cout << par[2] << std::endl;
+    Sorting::insertionSort(&par, (int) (length));
 
 
     par.cleanup();
-
-
-
-
-
-    //std::cout << result[2560] << std::endl;
-
-
-    //FileHandler::writeNumbers("file.bin");
-//    int *result = FileHandler::readNumbers("file.bin", 0, 2559);
-//
-//    std::cout << sizeof(&result) / sizeof(int) << std::endl;
-//
-//    std::cout << result[3] << std::endl;
-//
-//    PagedArray par;
-//
-//    int res = par[511];
-//
-//    //std::cout << res <<  std::endl;
-//
-//    free(result);
 
     return 0;
 }

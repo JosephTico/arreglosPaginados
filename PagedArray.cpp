@@ -41,9 +41,9 @@ int* PagedArray::getPage(int page) {
     int i;
     for (i=0; i < NUMPAGES; i++) {
         if (loadedPages[i] == page) {
-            printf ("Page %d is already on slot %d\n", page, i);
-            printf("LoadedPages: %d %d %d %d %d %d\n", loadedPages[0], loadedPages[1], loadedPages[2], loadedPages[3], loadedPages[4], loadedPages[5]);
-            printf("AccessedPages: %d %d %d %d %d %d\n", accessNumbers[0], accessNumbers[1], accessNumbers[2], accessNumbers[3], accessNumbers[4], accessNumbers[5]);
+            //printf ("Page %d is already on slot %d\n", page, i);
+            //printf("LoadedPages: %d %d %d %d %d %d\n", loadedPages[0], loadedPages[1], loadedPages[2], loadedPages[3], loadedPages[4], loadedPages[5]);
+            //printf("AccessedPages: %d %d %d %d %d %d\n", accessNumbers[0], accessNumbers[1], accessNumbers[2], accessNumbers[3], accessNumbers[4], accessNumbers[5]);
 
             lastAccessed = page;
             accessNumbers[i] += 1;
@@ -82,7 +82,7 @@ int* PagedArray::loadPage(int where, int which) {
     pageContainer[where] = loadedPage;
     loadedPages[where] = which;
 
-    printf ("Loaded page %d on slot %d\n", which, where);
+    //printf ("Loaded page %d on slot %d\n", which, where);
 
     return loadedPage;
 
@@ -93,9 +93,9 @@ int PagedArray::freePage() {
     int toReplace = 0;
     int maxValue = -1;
 
-    printf("Last accessed is: %i\n", lastAccessed);
-    printf("LoadedPages: %d %d %d %d %d %d\n", loadedPages[0], loadedPages[1], loadedPages[2], loadedPages[3], loadedPages[4], loadedPages[5]);
-    printf("AccessedPages: %d %d %d %d %d %d\n", accessNumbers[0], accessNumbers[1], accessNumbers[2], accessNumbers[3], accessNumbers[4], accessNumbers[5]);
+    //printf("Last accessed is: %i\n", lastAccessed);
+    //printf("LoadedPages: %d %d %d %d %d %d\n", loadedPages[0], loadedPages[1], loadedPages[2], loadedPages[3], loadedPages[4], loadedPages[5]);
+    //printf("AccessedPages: %d %d %d %d %d %d\n", accessNumbers[0], accessNumbers[1], accessNumbers[2], accessNumbers[3], accessNumbers[4], accessNumbers[5]);
 
 
     int i;
@@ -119,7 +119,7 @@ int PagedArray::freePage() {
     delete(pageContainer[toReplace]);
     loadedPages[toReplace] = -1;
 
-    printf ("Will free slot: %d\n", toReplace);
+    //printf ("Will free slot: %d\n", toReplace);
 
     return toReplace;
 

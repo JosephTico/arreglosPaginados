@@ -31,6 +31,8 @@ public:
     static void writeNumbers(FILE *file, int *arr, int page);
 
     static void createFinalFile(FILE *binFile);
+
+    static long getSize(FILE *pFILE);
 };
 
 

@@ -92,7 +92,13 @@ void FileHandler::writeNumtoBin(std::FILE* file, int num) {
 
 void FileHandler::writeNumbers(std::FILE* file, int* arr, int page) {
 
-    int arrSize = sizeof(arr) / sizeof(int) + 1;
+    if (page == -1)
+        return;
+
+    int arrSize = 256;
+
+    //printf("Will save page %d\n", page);
+    //printf("The arrsize is %d\n", arrSize);
 
 
     std::fseek(file, sizeof(int) * page * arrSize, SEEK_SET);
@@ -102,12 +108,10 @@ void FileHandler::writeNumbers(std::FILE* file, int* arr, int page) {
         if (arr[i] == -1)
             continue;
 
-        cout << arr[i] << endl;
+        //cout << arr[i] << endl;
         std::fwrite(&arr[i], sizeof(int), 1, file);
     }
 
-
-    cout << FileHandler::readNumbers(file, 0, 256)[4] << endl;
 
 }
 
@@ -160,4 +164,13 @@ int *FileHandler::readNumbers(std::FILE *pFile, int start, int length) {
 
 
     return result;
+}
+
+long FileHandler::getSize(FILE *binFile) {
+    std::fseek(binFile, 0L, SEEK_END);
+    long size = ftell(binFile);
+
+    std::fseek(binFile, 0, SEEK_SET);
+
+    return size;
 }
