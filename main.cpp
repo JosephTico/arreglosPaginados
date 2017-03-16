@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 
     a.parse_check(argc, argv);
 
-    std::FILE *file = FileHandler::openByFilename(a.get<std::string>("input"), "rb");
+    std::FILE *file = FileHandler::openByFilename(a.get<std::string>("input"), "r");
 
     std::FILE *binFile = FileHandler::txtToBinary(file);
 
