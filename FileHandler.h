@@ -33,6 +33,8 @@ public:
     static void createFinalFile(FILE *binFile);
 
     static long getSize(FILE *pFILE);
+
+    static void createFinalFile(FILE *binFile, std::string filename);
 };
 
 

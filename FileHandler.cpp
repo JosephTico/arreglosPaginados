@@ -10,20 +10,32 @@ using namespace std;
 
 
 
-
+/**
+ * Checks if a file exists
+ * @param fileName The filename to look for
+ * @return boolean If file exists
+ */
 bool is_file_exist(const char *fileName)
 {
     std::ifstream infile(fileName);
     return infile.good();
 }
 
-
+/**
+ * Creates a temporary binary file
+ * @return The temporary file pointer
+ */
 std::FILE* FileHandler::createTempFile() {
    std::FILE* tmpf = std::tmpfile();
     return tmpf;
 }
 
-
+/**
+ * Opens a file by filename
+ * @param filename The file to be opened
+ * @param mode The mode for fopen
+ * @return The file pointer
+ */
 std::FILE* FileHandler::openByFilename(string filename, string mode) {
 
     std::FILE *pFile;
@@ -38,7 +50,11 @@ std::FILE* FileHandler::openByFilename(string filename, string mode) {
     return pFile;
 }
 
-
+/**
+ * Converts a comma-separated list of integers on a text file to a binary file
+ * @param file The input file pointer
+ * @return The output file pointer
+ */
 std::FILE* FileHandler::txtToBinary(std::FILE* file) {
 
     int charCode;
@@ -81,7 +97,11 @@ std::FILE* FileHandler::txtToBinary(std::FILE* file) {
 
 }
 
-
+/**
+ * Writes a number to the binary file
+ * @param file The binary file to write to
+ * @param num The number to write
+ */
 void FileHandler::writeNumtoBin(std::FILE* file, int num) {
 
     std::fseek(file, 0, SEEK_END);
@@ -89,7 +109,12 @@ void FileHandler::writeNumtoBin(std::FILE* file, int num) {
     std::fwrite(&num, sizeof(int), 1, file);
 }
 
-
+/**
+ * Writes an array of numbers to the binary file
+ * @param file The binary file to write to
+ * @param arr The pointer of the integer array
+ * @param page The number of the page to be written
+ */
 void FileHandler::writeNumbers(std::FILE* file, int* arr, int page) {
 
     if (page == -1)
@@ -115,11 +140,16 @@ void FileHandler::writeNumbers(std::FILE* file, int* arr, int page) {
 
 }
 
-void FileHandler::createFinalFile(std::FILE* binFile) {
-    std::FILE* pFile = std::fopen("resultado.txt", "wb");
+/**
+ * Prepares to exit the software by creating the final text file
+ * @param binFile The final binary file to be used as input
+ * @param filename The final text file as output
+ */
+void FileHandler::createFinalFile(std::FILE* binFile, std::string filename) {
+    std::FILE* pFile = std::fopen(filename.c_str(), "wb");
     std::fclose(pFile);
 
-    std::ofstream out("resultado.txt");
+    std::ofstream out(filename.c_str());
 
 
     std::fseek(binFile, 0L, SEEK_END);
@@ -145,6 +175,13 @@ void FileHandler::createFinalFile(std::FILE* binFile) {
 }
 
 
+/**
+ * Reads an array of numbers from the binary file
+ * @param pFile The binary file pointer
+ * @param start Position to start reading data from
+ * @param length The length of data to be read
+ * @return The array of integers read from the file
+ */
 int *FileHandler::readNumbers(std::FILE *pFile, int start, int length) {
 
     // Must be in heap because of the non-constant array size.
@@ -166,6 +203,11 @@ int *FileHandler::readNumbers(std::FILE *pFile, int start, int length) {
     return result;
 }
 
+/**
+ * Gets the size of a file
+ * @param binFile The file pointer
+ * @return long The file size
+ */
 long FileHandler::getSize(FILE *binFile) {
     std::fseek(binFile, 0L, SEEK_END);
     long size = ftell(binFile);

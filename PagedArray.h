@@ -5,29 +5,23 @@
 #ifndef TAREAARREGLOSPAGINADOS_PAGEDARRAY_H
 #define TAREAARREGLOSPAGINADOS_PAGEDARRAY_H
 
+#include <string>
+
 
 class PagedArray {
-
-    int * getPage();
-
 public:
-    int getValue(int index);
-
-    int& operator[](int index);
-
-    bool isPageLoaded(int page);
-
-    static int * loadPage(int page);
-
     int *getPage(int page);
-
-    int freePage();
-
-    PagedArray(FILE *File);
 
     int *loadPage(int where, int which);
 
-    void cleanup();
+    int freePage();
+
+    void cleanup(std::string filename);
+
+
+    int& operator[](int index);
+
+    PagedArray(FILE* binFile);
 };
 
 

@@ -4,42 +4,45 @@
 #include "cmdline.h"
 #include "FileHandler.h"
 
-int main(int argc, char* argv[]) {
+/**
+ *
+ * @param argc
+ * @param argv
+ * @return
+ */
+int main(int argc, char *argv[]) {
 
     cmdline::parser a;
 
     a.add<std::string>("input", 'i', "input file", true, "");
 
-    a.add<std::string>("algorithm", 'o', "sort algorithm to use", true, "");
+    a.add<std::string>("algorithm", 'a', "sort algorithm to use", true, "",
+                       cmdline::oneof<std::string>("QS", "IS", "SS"));
 
-    a.add<std::string>("output", 'o', "output file", true, "resultado.txt");
+    a.add<std::string>("output", 'o', "output file", false, "resultado.txt");
 
     a.parse_check(argc, argv);
 
-    std::cout << a.get<std::string>("input") << ", "
-         << a.get<std::string>("algorithm") << ", "
-         << a.get<std::string>("output") << std::endl;
+    std::FILE *file = FileHandler::openByFilename(a.get<std::string>("input"), "rb");
 
-
-    exit(0);
-
-
-    std::FILE* file = FileHandler::openByFilename("numeros.txt", "rb");
-
-    std::FILE* binFile =  FileHandler::txtToBinary(file);
+    std::FILE *binFile = FileHandler::txtToBinary(file);
 
     long length = FileHandler::getSize(binFile) / sizeof(int);
 
     PagedArray par = PagedArray(binFile);
 
-    Sorting::quickSort(&par, 0, (int) (length - 1));
 
-    Sorting::selectionSort(&par, (int) (length));
+    std::string algo = a.get<std::string>("algorithm");
 
-    Sorting::insertionSort(&par, (int) (length));
+    if (algo == "QS") {
+        Sorting::quickSort(&par, 0, (int) (length - 1));
+    } else if (algo == "SS") {
+        Sorting::selectionSort(&par, (int) (length));
+    } else if (algo == "IS") {
+        Sorting::insertionSort(&par, (int) (length));
+    }
 
-
-    par.cleanup();
+    par.cleanup(a.get<std::string>("output"));
 
     return 0;
 }
